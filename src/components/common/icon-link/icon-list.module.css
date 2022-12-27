@@ -1,0 +1,24 @@
+.link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 16px;
+  border-radius: 40px;
+}
+
+.linkPrimary {
+  color: var(--primary-color);
+}
+
+.linkSecondary {
+  color: var(--secondary-color);
+}
+
+.icon {
+  display: block;
+  font-size: 0;
+}
+
+.text {
+  line-height: 24px;
+}

@@ -1,0 +1,9 @@
+:root {
+  --font-jetbrains-mono-regular: "JetBrains Mono", "Arial", sans-serif;
+  --main-bg-color: #131316;
+  --modal-bg-color: #1C1C21;
+  --primary-color: #F2F2F3;
+  --secondary-color: #8585AD;
+  --scrollbar-track-color: #2F2F37;
+  --scrollbar-track-thumb: #8585AD;
+}
