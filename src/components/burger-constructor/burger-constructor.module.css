@@ -7,6 +7,10 @@
   composes: visually-hidden from "../../assets/css/common.css";
 }
 
+.ingredientsListWrapper {
+  height: 80%;
+}
+
 .ingredientsList {
   composes: custom-scrollbar from "../../assets/css/common.css";
   height: 100%;
@@ -29,6 +33,6 @@
   align-items: center;
 }
 
-.ingredientDragIcon {
-  visibility: hidden;
+.ingredientLeftPart {
+  width: 20px;
 }
