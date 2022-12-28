@@ -2,21 +2,11 @@ import React from 'react';
 import classnames from 'classnames';
 import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Ingredient } from '../../types/ingredient';
+import { calcPropValues, getElementType } from '../../utils/utils';
 import styles from './burger-constructor.module.css';
 
 type BurgerConstructorProps = {
   ingredients: Ingredient[];
-};
-
-const getElementType = (arr: Ingredient[], index: number)  => {
-  switch (index) {
-    case 0:
-      return 'top';
-    case arr.length - 1:
-      return 'bottom';
-    default:
-      return undefined;
-  }
 };
 
 export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredients }) => (
@@ -29,11 +19,10 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
             key={ingredient._id}
             className={classnames(styles.ingredientItemWrapper)}
           >
-            <span className={classnames('mr-2')}>
+            <span className={classnames(styles.ingredientDragIcon, 'mr-2')}>
               <DragIcon type="primary" />
             </span>
             <ConstructorElement
-              type={getElementType(ingredients, i)}
               isLocked={true}
               text={ingredient.name}
               price={ingredient.price}
@@ -46,7 +35,9 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
     </div>
     <div className={styles.ingredientsListFooter}>
       <p className={classnames(styles.ingredientsListPrice, 'text text_type_digits-medium')}>
-        <span className={classnames('text text_type_digits-medium mr-2')}>610</span>
+        <span className={classnames('text text_type_digits-medium mr-2')}>
+          { calcPropValues(ingredients, 'price') }
+        </span>
         <CurrencyIcon type="primary" />
       </p>
       <Button

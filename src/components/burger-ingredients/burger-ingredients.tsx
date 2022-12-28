@@ -3,6 +3,8 @@ import classnames from 'classnames';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { BurgerIngredientList } from '../burger-ingredient-list/burger-ingredient-list';
 import { Ingredient } from '../../types/ingredient';
+import { getIngredientTypes } from '../../utils/utils';
+import { IngredientsMap } from '../../consts';
 import styles from './burger-ingredients.module.css';
 
 type BurgerIngredientsProps = {
@@ -10,7 +12,8 @@ type BurgerIngredientsProps = {
 };
 
 export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({ ingredients }) => {
-  const [currentTab, setCurrentTab] = useState('0');
+  const ingredientTypes = getIngredientTypes(ingredients);
+  const [currentTab, setCurrentTab] = useState<string>(ingredientTypes[0]);
 
   return (
     <section className={classnames(styles.burgerIngredients, 'pt-10')}>
@@ -18,15 +21,18 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({ ingredient
         Соберите бургер
       </h2>
       <div className={classnames(styles.tabs, 'mb-10')}>
-        <Tab value="0" active={currentTab === '0'} onClick={setCurrentTab}>
-          Булки
-        </Tab>
-        <Tab value="1" active={currentTab === '1'} onClick={setCurrentTab}>
-          Соусы
-        </Tab>
-        <Tab value="2" active={currentTab === '2'} onClick={setCurrentTab}>
-          Начинки
-        </Tab>
+        {
+          ingredientTypes.map((type) => (
+            <Tab
+              key={type}
+              value={type}
+              active={currentTab === type}
+              onClick={setCurrentTab}
+            >
+              { IngredientsMap[type] }
+            </Tab>
+          ))
+        }
       </div>
       <BurgerIngredientList ingredients={ingredients} />
     </section>

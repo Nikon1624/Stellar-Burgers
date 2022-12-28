@@ -10,3 +10,25 @@ export const getIngredientTypes = (ingredients: Ingredient[]): IngredientTypes[]
 
   return Array.from(uniqTypes) as IngredientTypes[];
 };
+
+
+export const getElementType = (arr: Ingredient[], index: number)  => {
+  switch (index) {
+    case 0:
+      return 'top';
+    case arr.length - 1:
+      return 'bottom';
+    default:
+      return undefined;
+  }
+};
+
+export const calcPropValues = <T extends object, P extends keyof T>(arr: T[], prop: P ) => {
+  return arr.reduce((acc, item) => {
+    if (typeof item[prop] === 'number') {
+      return acc += Number(item[prop]);
+    }
+
+    return acc;
+  }, 0);
+};
