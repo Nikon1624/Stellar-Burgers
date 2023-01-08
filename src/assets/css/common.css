@@ -38,6 +38,10 @@ html {
   overflow: hidden;
 }
 
+.dark-grey-text {
+  color: var(--secondary-color);
+}
+
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
 }

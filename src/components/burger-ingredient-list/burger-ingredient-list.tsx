@@ -1,5 +1,8 @@
 import React from 'react';
+import { useActive } from '../../hooks/use-active';
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
+import { Modal } from '../modal/modal';
+import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import classnames from 'classnames';
 import { Ingredient } from '../../types/ingredient';
 import { IngredientsMap } from '../../consts';
@@ -11,6 +14,12 @@ type BurgerIngredientListProps = {
 };
 
 export const BurgerIngredientList: React.FC<BurgerIngredientListProps> = ({ ingredients }) => {
+  const [selectedIngredient, setSelectedIngredient] = useActive<Ingredient | null>(null);
+
+  const handleCloseModal = () => {
+    setSelectedIngredient(null);
+  };
+
   const ingredientTypes = getIngredientTypes(ingredients);
 
   return (
@@ -21,7 +30,7 @@ export const BurgerIngredientList: React.FC<BurgerIngredientListProps> = ({ ingr
             key={i}
             className={classnames(styles.ingredientTypesWrapper, 'mb-10')}
           >
-            <h3 className={classnames('text text_type_main-medium mb-6')}>
+            <h3 className={classnames('text text_type_main-medium mb-6')} id={IngredientsMap[type]}>
               { IngredientsMap[type] }
             </h3>
             <div className={classnames(styles.ingredients, 'pl-4 pr-4 mb-10')}>
@@ -31,6 +40,7 @@ export const BurgerIngredientList: React.FC<BurgerIngredientListProps> = ({ ingr
                     ? <div
                       key={ingredient._id}
                       className={classnames(styles.ingredient, 'mb-8')}
+                      onClick={() => setSelectedIngredient(ingredient)}
                     >
                       <img src={ingredient.image} alt={ingredient.name}/>
                       <p className={classnames(styles.ingredientPriceWrapper, 'mb-1')}>
@@ -53,6 +63,12 @@ export const BurgerIngredientList: React.FC<BurgerIngredientListProps> = ({ ingr
           </div>
         ))
       }
+      <Modal isOpened={!!selectedIngredient} onClose={handleCloseModal}>
+        {
+          selectedIngredient &&
+          <IngredientDetails ingredient={selectedIngredient} />
+        }
+      </Modal>
     </div>
   );
 };

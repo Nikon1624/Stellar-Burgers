@@ -1,0 +1,25 @@
+.ingredientDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ingredientDetails h3 {
+  text-align: center;
+}
+
+.ingredientDetails img {
+  height: 240px;
+}
+
+.ingredientsNutritions {
+  display: flex;
+  align-items: center;
+}
+
+.ingredientsNutrition {
+  composes: dark-grey-text from "../../assets/css/common.css";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

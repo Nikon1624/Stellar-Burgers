@@ -16,3 +16,8 @@ export type Ingredient = {
 };
 
 export type NormalizedIngredient = Record<IngredientTypes, Ingredient[]>;
+
+export type IngredientsApiResponse = {
+  data: Ingredient[];
+  succsess: boolean;
+};
