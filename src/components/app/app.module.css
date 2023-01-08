@@ -1,0 +1,7 @@
+.mainWrapper {
+  composes: container from "../../assets/css/common.css";
+  display: flex;
+  justify-content: space-between;
+  height: calc(100vh - 88px);
+  overflow: hidden;
+}

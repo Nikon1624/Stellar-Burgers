@@ -1,0 +1,15 @@
+.header {
+  background-color: var(--modal-bg-color);
+}
+
+.wrapper {
+  composes: container from "../../assets/css/common.css";
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.list {
+  composes: list from "../../assets/css/common.css";
+  composes: list-flex from "../../assets/css/common.css";
+}

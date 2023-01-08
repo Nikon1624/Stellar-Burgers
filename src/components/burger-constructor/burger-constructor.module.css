@@ -1,0 +1,38 @@
+.burgerConstructor {
+  width: 664px;
+  height: calc(100% - 150px);
+}
+
+.burgerConstructorTitle {
+  composes: visually-hidden from "../../assets/css/common.css";
+}
+
+.ingredientsListWrapper {
+  height: 80%;
+}
+
+.ingredientsList {
+  composes: custom-scrollbar from "../../assets/css/common.css";
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.ingredientItemWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.ingredientsListFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ingredientsListPrice {
+  display: flex;
+  align-items: center;
+}
+
+.ingredientLeftPart {
+  width: 20px;
+}
