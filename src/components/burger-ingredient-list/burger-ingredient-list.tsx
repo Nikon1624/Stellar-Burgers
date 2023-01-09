@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useMemo, forwardRef } from 'react';
 import { useActive } from '../../hooks/use-active';
-import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
-import { Modal } from '../modal/modal';
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import classnames from 'classnames';
+import { Modal } from '../modal/modal';
+import { IngredientCard } from '../ingredient-card/ingredient-card';
+import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { Ingredient } from '../../types/ingredient';
 import { IngredientsMap } from '../../consts';
 import { getIngredientTypes } from '../../utils/utils';
@@ -11,16 +11,17 @@ import styles from './burger-ingredient-list.module.css';
 
 type BurgerIngredientListProps = {
   ingredients: Ingredient[];
+  currentTab: string;
 };
 
-export const BurgerIngredientList: React.FC<BurgerIngredientListProps> = ({ ingredients }) => {
+export const BurgerIngredientList = forwardRef<HTMLHeadingElement | null, BurgerIngredientListProps>(({ ingredients, currentTab }, ref) => {
   const [selectedIngredient, setSelectedIngredient] = useActive<Ingredient | null>(null);
 
   const handleCloseModal = () => {
     setSelectedIngredient(null);
   };
 
-  const ingredientTypes = getIngredientTypes(ingredients);
+  const ingredientTypes = useMemo(() => getIngredientTypes(ingredients), [ingredients]);
 
   return (
     <div className={classnames(styles.ingredientList)}>
@@ -30,32 +31,18 @@ export const BurgerIngredientList: React.FC<BurgerIngredientListProps> = ({ ingr
             key={i}
             className={classnames(styles.ingredientTypesWrapper, 'mb-10')}
           >
-            <h3 className={classnames('text text_type_main-medium mb-6')} id={type}>
+            <h3
+              className={classnames('text text_type_main-medium mb-6')}
+              id={type}
+              ref={currentTab === type ? ref : null}
+            >
               { IngredientsMap[type] }
             </h3>
             <div className={classnames(styles.ingredients, 'pl-4 pr-4 mb-10')}>
               {
                 ingredients.map((ingredient) => {
                   return ingredient.type === type
-                    ? <div
-                      key={ingredient._id}
-                      className={classnames(styles.ingredient, 'mb-8')}
-                      onClick={() => setSelectedIngredient(ingredient)}
-                    >
-                      <img src={ingredient.image} alt={ingredient.name}/>
-                      <p className={classnames(styles.ingredientPriceWrapper, 'mb-1')}>
-                        <span className={classnames('text text_type_digits-default mr-2')}>
-                          { ingredient.price }
-                        </span>
-                        <CurrencyIcon type="primary" />
-                      </p>
-                      <p className={classnames(styles.ingredientName, 'text text_type_main-default')}>
-                        { ingredient.name }
-                      </p>
-                      <div className={classnames(styles.ingredientCount)}>
-                        <Counter count={1} size="default" extraClass="m-1" />
-                      </div>
-                    </div>
+                    ? <IngredientCard key={ingredient._id} ingredient={ingredient} onClick={setSelectedIngredient} />
                     : null;
                 })
               }
@@ -64,11 +51,8 @@ export const BurgerIngredientList: React.FC<BurgerIngredientListProps> = ({ ingr
         ))
       }
       <Modal isOpened={!!selectedIngredient} onClose={handleCloseModal}>
-        {
-          selectedIngredient &&
-          <IngredientDetails ingredient={selectedIngredient} />
-        }
+        <IngredientDetails ingredient={selectedIngredient as Ingredient} />
       </Modal>
     </div>
   );
-};
+});

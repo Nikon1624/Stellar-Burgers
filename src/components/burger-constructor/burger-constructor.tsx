@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import classnames from 'classnames';
 import { useActive } from '../../hooks/use-active';
 import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -23,8 +23,13 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
     setShowModal(false);
   };
 
-  const bun = ingredients.find((ingredient) => ingredient.type === 'bun');
-  const onlyIngredients = ingredients.filter((ingredient) => ingredient.type !== 'bun');
+  const bun = useMemo(() => (
+    ingredients.find((ingredient) => ingredient.type === 'bun')
+  ), [ingredients]);
+
+  const onlyIngredients = useMemo(() => (
+    ingredients.filter((ingredient) => ingredient.type !== 'bun')
+  ), [ingredients]);
 
   return (
     <section className={ classnames(styles.burgerConstructor, 'pl-4 pr-4 pt-25') }>

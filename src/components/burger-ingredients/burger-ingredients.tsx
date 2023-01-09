@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import classnames from 'classnames';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { BurgerIngredientList } from '../burger-ingredient-list/burger-ingredient-list';
@@ -12,14 +12,13 @@ type BurgerIngredientsProps = {
 };
 
 export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({ ingredients }) => {
-  const ingredientTypes = getIngredientTypes(ingredients);
+  const ingredientTypes = useMemo(() => getIngredientTypes(ingredients), [ingredients]);
   const [currentTab, setCurrentTab] = useState<string>(ingredientTypes[0]);
+  const currentTabHeaderRef = useRef<HTMLHeadingElement | null>(null);
 
   useEffect(() => {
-    const elem = document.getElementById(currentTab);
-
-    if (elem) {
-      elem.scrollIntoView({ behavior: 'smooth' });
+    if (currentTabHeaderRef.current) {
+      currentTabHeaderRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [currentTab]);
 
@@ -42,7 +41,7 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({ ingredient
           ))
         }
       </div>
-      <BurgerIngredientList ingredients={ingredients} />
+      <BurgerIngredientList ingredients={ingredients} currentTab={currentTab} ref={currentTabHeaderRef} />
     </section>
   );
 }
