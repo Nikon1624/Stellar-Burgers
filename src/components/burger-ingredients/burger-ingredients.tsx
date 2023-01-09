@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { BurgerIngredientList } from '../burger-ingredient-list/burger-ingredient-list';
-import { Ingredient, IngredientTypes } from '../../types/ingredient';
+import { Ingredient } from '../../types/ingredient';
 import { getIngredientTypes } from '../../utils/utils';
 import { IngredientsMap } from '../../consts';
 import styles from './burger-ingredients.module.css';
@@ -15,15 +15,13 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({ ingredient
   const ingredientTypes = getIngredientTypes(ingredients);
   const [currentTab, setCurrentTab] = useState<string>(ingredientTypes[0]);
 
-  const handleTabClick = (id: IngredientTypes) => {
-    const elem = document.getElementById(IngredientsMap[id]);
+  useEffect(() => {
+    const elem = document.getElementById(currentTab);
 
     if (elem) {
       elem.scrollIntoView({ behavior: 'smooth' });
     }
-
-    setCurrentTab(id);
-  };
+  }, [currentTab]);
 
   return (
     <section className={classnames(styles.burgerIngredients, 'pt-10')}>
@@ -37,7 +35,7 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({ ingredient
               key={type}
               value={type}
               active={currentTab === type}
-              onClick={() => handleTabClick(type)}
+              onClick={setCurrentTab}
             >
               { IngredientsMap[type] }
             </Tab>

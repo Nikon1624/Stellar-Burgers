@@ -30,7 +30,7 @@ export const BurgerIngredientList: React.FC<BurgerIngredientListProps> = ({ ingr
             key={i}
             className={classnames(styles.ingredientTypesWrapper, 'mb-10')}
           >
-            <h3 className={classnames('text text_type_main-medium mb-6')} id={IngredientsMap[type]}>
+            <h3 className={classnames('text text_type_main-medium mb-6')} id={type}>
               { IngredientsMap[type] }
             </h3>
             <div className={classnames(styles.ingredients, 'pl-4 pr-4 mb-10')}>
