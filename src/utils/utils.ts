@@ -32,3 +32,7 @@ export const calcPropValues = <T extends object, P extends keyof T>(arr: T[], pr
     return acc;
   }, 0);
 };
+
+export const serializeToQueryParams = (obj: object): string => {
+  return Object.entries(obj).map(([key, val]) => `${key}=${val}`).join('&');
+};

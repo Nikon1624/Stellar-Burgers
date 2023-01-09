@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import classnames from 'classnames';
+import { useActive } from '../../hooks/use-active';
 import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import { Modal } from '../modal/modal';
+import { OrderDetails } from '../order-details/order-details';
 import { Ingredient } from '../../types/ingredient';
 import { calcPropValues } from '../../utils/utils';
 import styles from './burger-constructor.module.css';
@@ -10,25 +13,30 @@ type BurgerConstructorProps = {
 };
 
 export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredients }) => {
-  const buns: Ingredient[] = [];
+  const [showModal, setShowModal] = useActive<boolean>(false);
 
-  const onlyIngredients = ingredients.filter((ingredient) => {
-    if (ingredient.type === 'bun') {
-      buns.push(ingredient);
-      return false;
-    }
+  const handleModalShow = () => {
+    setShowModal(true);
+  };
 
-    return true;
-  });
+  const handleModalClose= () => {
+    setShowModal(false);
+  };
 
-  const [topBun, bottomBun] = buns;
+  const bun = useMemo(() => (
+    ingredients.find((ingredient) => ingredient.type === 'bun')
+  ), [ingredients]);
+
+  const onlyIngredients = useMemo(() => (
+    ingredients.filter((ingredient) => ingredient.type !== 'bun')
+  ), [ingredients]);
 
   return (
     <section className={ classnames(styles.burgerConstructor, 'pl-4 pr-4 pt-25') }>
       <h2 className={ styles.burgerConstructorTitle }>Конструктор</h2>
       <div className={ classnames(styles.ingredientsListWrapper, 'mb-10') }>
         {
-          topBun &&
+          bun &&
           <div
             className={ classnames(styles.ingredientItemWrapper) }
           >
@@ -36,9 +44,9 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
             <ConstructorElement
               type="top"
               isLocked={ false }
-              text={ buns[0].name }
-              price={ buns[0].price }
-              thumbnail={ buns[0].image }
+              text={ bun.name }
+              price={ bun.price }
+              thumbnail={ bun.image }
               extraClass={ classnames('mb-4') }
             />
           </div>
@@ -58,14 +66,14 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
                   text={ ingredient.name }
                   price={ ingredient.price }
                   thumbnail={ ingredient.image }
-                  extraClass={ classnames({ 'mb-4': i !== ingredients.length - 1 }) }
+                  extraClass={ classnames({ 'mb-4': i !== onlyIngredients.length - 1 }) }
                 />
               </div>
             ))
           }
         </div>
         {
-          bottomBun &&
+          bun &&
           <div
             className={ classnames(styles.ingredientItemWrapper) }
           >
@@ -73,10 +81,10 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
             <ConstructorElement
               type="bottom"
               isLocked={ false }
-              text={ buns[1].name }
-              price={ buns[1].price }
-              thumbnail={ buns[1].image }
-              extraClass={ classnames('mb-4') }
+              text={ bun.name }
+              price={ bun.price }
+              thumbnail={ bun.image }
+              extraClass={ classnames('mb-4 mt-4') }
             />
           </div>
         }
@@ -92,11 +100,15 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
             type="primary"
             size="medium"
             extraClass={ classnames('ml-10') }
+            onClick={handleModalShow}
           >
             Оформить заказ
           </Button>
         </div>
       </div>
+      <Modal isOpened={showModal} onClose={handleModalClose}>
+        <OrderDetails />
+      </Modal>
     </section>
   );
 };
