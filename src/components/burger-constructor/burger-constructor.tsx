@@ -1,18 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import { useActive } from '../../hooks/use-active';
 import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
-import { Ingredient } from '../../types/ingredient';
 import { calcPropValues } from '../../utils/utils';
+import { IngredientsContext } from '../../services/ingredients-context';
+import { OrdersService } from '../../services/orders-service';
 import styles from './burger-constructor.module.css';
 
-type BurgerConstructorProps = {
-  ingredients: Ingredient[];
-};
-
-export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredients }) => {
+export const BurgerConstructor: React.FC = () => {
+  const ingredients = useContext(IngredientsContext);
+  const [orderNumber, setOrderNumber] = useState<number | null>(null);
   const [showModal, setShowModal] = useActive<boolean>(false);
 
   const handleModalShow = () => {
@@ -23,6 +22,16 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
     setShowModal(false);
   };
 
+  const handleOrderClick = async () => {
+    const ids = ingredients.map((ingredient) => ingredient._id);
+    const res = await OrdersService.sendRequest({ ingredients: ids });
+
+    if (res) {
+      setOrderNumber(res.order.number);
+      handleModalShow();
+    }
+  };
+
   const bun = useMemo(() => (
     ingredients.find((ingredient) => ingredient.type === 'bun')
   ), [ingredients]);
@@ -30,6 +39,17 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
   const onlyIngredients = useMemo(() => (
     ingredients.filter((ingredient) => ingredient.type !== 'bun')
   ), [ingredients]);
+
+  const totalPrice = useMemo(() => {
+    const ingredientsTotal = calcPropValues(onlyIngredients, 'price');
+
+    if (bun) {
+      const bunsTotal = bun.price * 2;
+      return ingredientsTotal + bunsTotal;
+    }
+
+    return ingredientsTotal;
+  }, [bun, onlyIngredients]);
 
   return (
     <section className={ classnames(styles.burgerConstructor, 'pl-4 pr-4 pt-25') }>
@@ -91,7 +111,7 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
         <div className={ styles.ingredientsListFooter }>
           <p className={ classnames(styles.ingredientsListPrice, 'text text_type_digits-medium') }>
         <span className={ classnames('text text_type_digits-medium mr-2') }>
-          { calcPropValues(ingredients, 'price') }
+          { totalPrice }
         </span>
             <CurrencyIcon type="primary"/>
           </p>
@@ -100,15 +120,18 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
             type="primary"
             size="medium"
             extraClass={ classnames('ml-10') }
-            onClick={handleModalShow}
+            onClick={handleOrderClick}
           >
             Оформить заказ
           </Button>
         </div>
       </div>
-      <Modal isOpened={showModal} onClose={handleModalClose}>
-        <OrderDetails />
-      </Modal>
+      {
+        orderNumber &&
+        <Modal isOpened={showModal} onClose={handleModalClose}>
+          <OrderDetails orderNumber={orderNumber} />
+        </Modal>
+      }
     </section>
   );
 };

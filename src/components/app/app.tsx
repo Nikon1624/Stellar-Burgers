@@ -8,6 +8,7 @@ import { AppHeader } from '../app-header/app-header';
 import { BurgerIngredients } from '../burger-ingredients/burger-ingredients';
 import { BurgerConstructor } from '../burger-constructor/burger-constructor';
 import { Ingredient } from '../../types/ingredient';
+import { IngredientsContext } from '../../services/ingredients-context';
 import styles from './app.module.css';
 
 function App() {
@@ -26,19 +27,21 @@ function App() {
 
   return (
     <>
-      <AppHeader />
-      <main>
-        <div className={classnames(styles.mainWrapper, 'pl-5 pr-5')}>
-          {
-            ingredients.length &&
-            <>
-              <BurgerIngredients ingredients={ingredients} />
-              <BurgerConstructor ingredients={ingredients} />
-            </>
-          }
-        </div>
-      </main>
-      <ToastContainer />
+      <IngredientsContext.Provider value={ingredients}>
+        <AppHeader />
+        <main>
+          <div className={classnames(styles.mainWrapper, 'pl-5 pr-5')}>
+            {
+              ingredients.length &&
+              <>
+                <BurgerIngredients />
+                <BurgerConstructor />
+              </>
+            }
+          </div>
+        </main>
+        <ToastContainer />
+      </IngredientsContext.Provider>
     </>
   );
 }

@@ -1,26 +1,37 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useContext } from 'react';
 import classnames from 'classnames';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { BurgerIngredientList } from '../burger-ingredient-list/burger-ingredient-list';
-import { Ingredient } from '../../types/ingredient';
 import { getIngredientTypes } from '../../utils/utils';
 import { IngredientsMap } from '../../consts';
+import { IngredientsContext } from '../../services/ingredients-context';
 import styles from './burger-ingredients.module.css';
 
-type BurgerIngredientsProps = {
-  ingredients: Ingredient[];
-};
-
-export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({ ingredients }) => {
+export const BurgerIngredients: React.FC = () => {
+  const ingredients = useContext(IngredientsContext);
   const ingredientTypes = useMemo(() => getIngredientTypes(ingredients), [ingredients]);
   const [currentTab, setCurrentTab] = useState<string>(ingredientTypes[0]);
   const currentTabHeaderRef = useRef<HTMLHeadingElement | null>(null);
+  const isChangeTab = useRef(true);
 
   useEffect(() => {
-    if (currentTabHeaderRef.current) {
+    if (currentTabHeaderRef.current && isChangeTab.current) {
       currentTabHeaderRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [currentTab]);
+
+  const handleTabChange = (value: string) => {
+    isChangeTab.current = true;
+    setCurrentTab(value);
+  };
+
+  const handleListScroll = (value: string) => {
+    if (!isChangeTab.current) {
+      setCurrentTab(value);
+    }
+
+    isChangeTab.current = false;
+  };
 
   return (
     <section className={classnames(styles.burgerIngredients, 'pt-10')}>
@@ -34,14 +45,14 @@ export const BurgerIngredients: React.FC<BurgerIngredientsProps> = ({ ingredient
               key={type}
               value={type}
               active={currentTab === type}
-              onClick={setCurrentTab}
+              onClick={handleTabChange}
             >
               { IngredientsMap[type] }
             </Tab>
           ))
         }
       </div>
-      <BurgerIngredientList ingredients={ingredients} currentTab={currentTab} ref={currentTabHeaderRef} />
+      <BurgerIngredientList ingredients={ingredients} currentTab={currentTab} ref={currentTabHeaderRef} onScroll={handleListScroll} />
     </section>
   );
 }

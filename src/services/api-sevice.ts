@@ -16,8 +16,7 @@ export class ApiService {
 
   public static async post<R>(endpoint: string, params: object) {
     try {
-      const url = params ? `${endpoint}?${serializeToQueryParams(params)}` : endpoint;
-      return await axiosInstance.post<R>(url);
+      return await axiosInstance.post<R>(endpoint, params);
     } catch (e) {
       toast.error('Произошла ошибка, попробуйте позже', {
         theme: 'dark',
