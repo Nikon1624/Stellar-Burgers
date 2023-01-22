@@ -36,3 +36,13 @@ export const calcPropValues = <T extends object, P extends keyof T>(arr: T[], pr
 export const serializeToQueryParams = (obj: object): string => {
   return Object.entries(obj).map(([key, val]) => `${key}=${val}`).join('&');
 };
+
+export const moveItem = <T>(arr: T[], itemIndex: number, positionIndex: number) => {
+  const result = [...arr];
+  const item = arr[itemIndex];
+
+  result.splice(itemIndex, 1);
+  result.splice(positionIndex, 0, item);
+
+  return result;
+};

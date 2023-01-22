@@ -7,8 +7,6 @@ export class OrdersService {
   public static async sendRequest(params = {}) {
     const res = await ApiService.post<OrdersApiResponse>(ENDPOINT, params);
 
-    if (res) {
-      return res.data;
-    }
+    return res ? res.data : null;
   }
 }
