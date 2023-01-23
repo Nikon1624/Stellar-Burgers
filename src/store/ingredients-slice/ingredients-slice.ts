@@ -39,7 +39,9 @@ export const ingredientsSlice = createSlice({
       .addCase(fetchIngredients.fulfilled, (state, action) => {
         state.ingredients = action.payload;
       })
-      .addCase(fetchIngredients.rejected, () => {
+      .addCase(fetchIngredients.rejected, (state) => {
+        state.ingredients = [];
+
         toast.error('Произошла ошибка, попробуйте позже', {
           theme: 'dark',
         });
@@ -50,7 +52,9 @@ export const ingredientsSlice = createSlice({
       .addCase(sendOrder.fulfilled, (state, action) => {
         state.order = action.payload;
       })
-      .addCase(sendOrder.rejected, () => {
+      .addCase(sendOrder.rejected, (state) => {
+        state.order = null;
+
         toast.error('Произошла ошибка, попробуйте позже', {
           theme: 'dark',
         });

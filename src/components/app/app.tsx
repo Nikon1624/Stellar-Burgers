@@ -18,10 +18,8 @@ function App() {
   const ingredients = useAppSelector(getIngredients);
 
   useEffect(() => {
-    if (!ingredients.length) {
-      dispatch(fetchIngredients());
-    }
-  }, [ingredients, dispatch]);
+    dispatch(fetchIngredients());
+  }, [dispatch]);
 
   return (
     <>
@@ -29,7 +27,7 @@ function App() {
       <main className={ classnames(styles.mainWrapper, 'pl-5 pr-5') }>
         <DndProvider backend={HTML5Backend}>
           {
-            ingredients.length &&
+            !!ingredients.length &&
             <>
               <BurgerIngredients />
               <BurgerConstructor />
