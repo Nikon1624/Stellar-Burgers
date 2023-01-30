@@ -15,6 +15,8 @@ export type Ingredient = {
   __v: number;
 };
 
+export type IngredientWithUniqId = Ingredient & { uniqId: string };
+
 export type NormalizedIngredient = Record<IngredientTypes, Ingredient[]>;
 
 export type IngredientsApiResponse = {

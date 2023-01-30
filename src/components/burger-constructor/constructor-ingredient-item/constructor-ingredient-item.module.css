@@ -1,0 +1,18 @@
+.ingredientItemWrapper {
+  display: flex;
+  align-items: center;
+}
+
+
+.ingredientLeftPart {
+  cursor: pointer;
+  width: 20px;
+}
+
+.ingredientRightPart {
+  width: 100%;
+}
+
+.drag {
+  opacity: 0;
+}

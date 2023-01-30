@@ -8,6 +8,10 @@
   cursor: pointer;
 }
 
+.ingredientHidden {
+  opacity: 0.5;
+}
+
 .ingredient:nth-last-child(-n+2) {
   margin-bottom: 0;
 }

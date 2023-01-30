@@ -1,42 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import { ToastContainer } from 'react-toastify';
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import 'react-toastify/dist/ReactToastify.css';
 import '@ya.praktikum/react-developer-burger-ui-components';
-import { IngredientsService } from '../../services/ingredients-service';
 import { AppHeader } from '../app-header/app-header';
 import { BurgerIngredients } from '../burger-ingredients/burger-ingredients';
 import { BurgerConstructor } from '../burger-constructor/burger-constructor';
-import { Ingredient } from '../../types/ingredient';
+import { useAppDispatch, useAppSelector } from '../../hooks/state';
+import { fetchIngredients } from '../../store/ingredients-slice/actions';
+import { getIngredients } from '../../store/ingredients-slice/selectors';
 import styles from './app.module.css';
 
 function App() {
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const dispatch = useAppDispatch();
+  const ingredients = useAppSelector(getIngredients);
 
   useEffect(() => {
-    if (!ingredients.length) {
-      const getIngredients = async () => {
-        const data = await IngredientsService.getList();
-        setIngredients(data);
-      };
-
-      getIngredients();
-    }
-  }, [ingredients]);
+    dispatch(fetchIngredients());
+  }, [dispatch]);
 
   return (
     <>
       <AppHeader />
-      <main>
-        <div className={classnames(styles.mainWrapper, 'pl-5 pr-5')}>
+      <main className={ classnames(styles.mainWrapper, 'pl-5 pr-5') }>
+        <DndProvider backend={HTML5Backend}>
           {
-            ingredients.length &&
+            !!ingredients.length &&
             <>
-              <BurgerIngredients ingredients={ingredients} />
-              <BurgerConstructor ingredients={ingredients} />
+              <BurgerIngredients />
+              <BurgerConstructor />
             </>
           }
-        </div>
+        </DndProvider>
       </main>
       <ToastContainer />
     </>

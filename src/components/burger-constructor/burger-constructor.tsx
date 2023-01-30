@@ -1,26 +1,42 @@
 import React, { useMemo } from 'react';
 import classnames from 'classnames';
 import { useActive } from '../../hooks/use-active';
-import { ConstructorElement, DragIcon, CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import { CurrencyIcon, Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import { BurgerConstructorEmptyList } from './burger-constructor-empty-list/burger-constructor-empty-list';
+import { BurgerConstructorList } from './burger-constructor-list/burger-constructor-list';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
-import { Ingredient } from '../../types/ingredient';
 import { calcPropValues } from '../../utils/utils';
+import { useAppDispatch, useAppSelector } from '../../hooks/state';
+import { getOrder, getSelectedIngredients } from '../../store/ingredients-slice/selectors';
+import { sendOrder } from '../../store/ingredients-slice/actions';
+import { toast } from 'react-toastify';
+import { useDrop } from 'react-dnd';
+import { DnDTypes } from '../../consts';
+import { addSelectedIngredient } from '../../store/ingredients-slice/ingredients-slice';
+import { Ingredient } from '../../types/ingredient';
 import styles from './burger-constructor.module.css';
 
-type BurgerConstructorProps = {
-  ingredients: Ingredient[];
-};
-
-export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredients }) => {
+export const BurgerConstructor: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const ingredients = useAppSelector(getSelectedIngredients);
+  const order = useAppSelector(getOrder);
   const [showModal, setShowModal] = useActive<boolean>(false);
 
-  const handleModalShow = () => {
-    setShowModal(true);
+  const handleModalClose = () => {
+    setShowModal(false);
   };
 
-  const handleModalClose= () => {
-    setShowModal(false);
+  const handleOrderClick = () => {
+    if (ingredients.length && bun) {
+      const ids = ingredients.map((ingredient) => ingredient._id);
+      dispatch(sendOrder(ids));
+      setShowModal(true);
+    } else {
+      toast.info('Выберите ингредиенты и булки', {
+        theme: 'dark',
+      });
+    }
   };
 
   const bun = useMemo(() => (
@@ -31,84 +47,58 @@ export const BurgerConstructor: React.FC<BurgerConstructorProps> = ({ ingredient
     ingredients.filter((ingredient) => ingredient.type !== 'bun')
   ), [ingredients]);
 
+  const totalPrice = useMemo(() => {
+    const ingredientsTotal = calcPropValues(onlyIngredients, 'price');
+
+    if (bun) {
+      const bunsTotal = bun.price * 2;
+      return ingredientsTotal + bunsTotal;
+    }
+
+    return ingredientsTotal;
+  }, [bun, onlyIngredients]);
+
+  const [, dropRef] = useDrop<Ingredient>({
+    accept: DnDTypes.Ingredients,
+    drop(ingredient) {
+      dispatch(addSelectedIngredient(ingredient));
+    },
+  });
+
   return (
     <section className={ classnames(styles.burgerConstructor, 'pl-4 pr-4 pt-25') }>
       <h2 className={ styles.burgerConstructorTitle }>Конструктор</h2>
-      <div className={ classnames(styles.ingredientsListWrapper, 'mb-10') }>
+      <div ref={dropRef} className={ classnames(styles.ingredientsListWrapper, 'mb-10') }>
         {
-          bun &&
-          <div
-            className={ classnames(styles.ingredientItemWrapper) }
-          >
-            <div className={ classnames(styles.ingredientLeftPart, 'mr-2') }/>
-            <ConstructorElement
-              type="top"
-              isLocked={ false }
-              text={ bun.name }
-              price={ bun.price }
-              thumbnail={ bun.image }
-              extraClass={ classnames('mb-4') }
-            />
-          </div>
-        }
-        <div className={ classnames(styles.ingredientsList) }>
-          {
-            onlyIngredients.map((ingredient, i) => (
-              <div
-                key={ ingredient._id }
-                className={ classnames(styles.ingredientItemWrapper) }
-              >
-                <div className={ classnames(styles.ingredientLeftPart, 'mr-2') }>
-                  <DragIcon type="primary"/>
-                </div>
-                <ConstructorElement
-                  isLocked={ true }
-                  text={ ingredient.name }
-                  price={ ingredient.price }
-                  thumbnail={ ingredient.image }
-                  extraClass={ classnames({ 'mb-4': i !== onlyIngredients.length - 1 }) }
-                />
-              </div>
-            ))
-          }
-        </div>
-        {
-          bun &&
-          <div
-            className={ classnames(styles.ingredientItemWrapper) }
-          >
-            <div className={ classnames(styles.ingredientLeftPart, 'mr-2') }/>
-            <ConstructorElement
-              type="bottom"
-              isLocked={ false }
-              text={ bun.name }
-              price={ bun.price }
-              thumbnail={ bun.image }
-              extraClass={ classnames('mb-4 mt-4') }
-            />
-          </div>
+          ingredients.length
+            ? <BurgerConstructorList bun={bun} ingredients={onlyIngredients} />
+            : <BurgerConstructorEmptyList />
         }
         <div className={ styles.ingredientsListFooter }>
           <p className={ classnames(styles.ingredientsListPrice, 'text text_type_digits-medium') }>
         <span className={ classnames('text text_type_digits-medium mr-2') }>
-          { calcPropValues(ingredients, 'price') }
+          { totalPrice }
         </span>
-            <CurrencyIcon type="primary"/>
+            <CurrencyIcon type="primary" />
           </p>
           <Button
             htmlType="button"
             type="primary"
             size="medium"
-            extraClass={ classnames('ml-10') }
-            onClick={handleModalShow}
+            extraClass="ml-10"
+            onClick={ handleOrderClick }
           >
             Оформить заказ
           </Button>
         </div>
       </div>
-      <Modal isOpened={showModal} onClose={handleModalClose}>
-        <OrderDetails />
-      </Modal>
+      {
+        order && showModal && (
+          <Modal onClose={ handleModalClose }>
+            <OrderDetails orderNumber={ order.order.number } />
+          </Modal>
+        )
+      }
     </section>
   );
 };

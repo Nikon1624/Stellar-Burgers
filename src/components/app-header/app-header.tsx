@@ -5,16 +5,16 @@ import { IconLink } from '../common/icon-link/icon-link';
 import styles from './app-header.module.css';
 
 export const AppHeader: React.FC = () => (
-  <header className={classnames('pt-4 pb-4', styles.header)}>
-    <div className={classnames(styles.wrapper)}>
+  <header className={ classnames('pt-4 pb-4', styles.header) }>
+    <div className={ styles.wrapper }>
       <nav>
-        <ul className={classnames(styles.list)}>
-          <li className={classnames(styles.listItem)}>
+        <ul className={ styles.list }>
+          <li className={ styles.listItem }>
             <IconLink url="" text="Конструктор" type="secondary">
               <BurgerIcon type="secondary" />
             </IconLink>
           </li>
-          <li className={classnames(styles.listItem)}>
+          <li className={ styles.listItem }>
             <IconLink url="" text="Лента заказов" type="secondary">
               <ListIcon type="secondary" />
             </IconLink>
