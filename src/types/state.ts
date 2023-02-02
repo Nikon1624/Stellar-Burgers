@@ -9,6 +9,16 @@ export type IngredientsState = {
   order: OrdersApiResponse | null;
 };
 
+export type User = {
+  email: string;
+  name: string;
+};
+
+export type UserState = {
+  user: User | null;
+  isLoading: boolean;
+};
+
 export type StateType = ReturnType<typeof store.getState>;
 
 export type AppDispatch = typeof store.dispatch;

@@ -1,0 +1,40 @@
+.mainWrapper {
+  display: flex;
+}
+
+.aside {
+  width: 320px;
+}
+
+.navigationList {
+  composes: list from "../../assets/css/common.css";
+  width: 100%;
+}
+
+.navigationItem {
+  display: block;
+  width: 100%;
+  padding: 17px 0;
+  text-decoration: none;
+  color: var(--secondary-color);
+  transition: .2s;
+}
+
+.navigationItem:hover {
+  text-shadow: 0 0 16px rgba(51, 51, 255, 0.25), 0 0 8px rgba(51, 51, 255, 0.25), 0 4px 32px rgba(51, 51, 255, 0.5);
+}
+
+.navigationItemActive {
+  color: var(--primary-color);
+}
+
+.navigationItemButton {
+  background-color: inherit;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+}
+
+.navigationItemDescription {
+  color: var(--secondary-color);
+}

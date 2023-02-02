@@ -9,6 +9,7 @@ import { OrderDetails } from '../order-details/order-details';
 import { calcPropValues } from '../../utils/utils';
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
 import { getOrder, getSelectedIngredients } from '../../store/ingredients-slice/selectors';
+import { getUser } from '../../store/user-slice/selectors';
 import { sendOrder } from '../../store/ingredients-slice/actions';
 import { toast } from 'react-toastify';
 import { useDrop } from 'react-dnd';
@@ -19,6 +20,7 @@ import styles from './burger-constructor.module.css';
 
 export const BurgerConstructor: React.FC = () => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(getUser);
   const ingredients = useAppSelector(getSelectedIngredients);
   const order = useAppSelector(getOrder);
   const [showModal, setShowModal] = useActive<boolean>(false);
@@ -28,12 +30,13 @@ export const BurgerConstructor: React.FC = () => {
   };
 
   const handleOrderClick = () => {
-    if (ingredients.length && bun) {
+    if (ingredients.length && bun && user) {
       const ids = ingredients.map((ingredient) => ingredient._id);
       dispatch(sendOrder(ids));
       setShowModal(true);
     } else {
-      toast.info('Выберите ингредиенты и булки', {
+      const message = user ? 'Выберите ингредиенты и булки' : 'Необходимо войти в аккаунт';
+      toast.info(message, {
         theme: 'dark',
       });
     }

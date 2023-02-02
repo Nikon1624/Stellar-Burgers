@@ -31,6 +31,7 @@ export const BurgerIngredientList = forwardRef<HTMLHeadingElement | null, Burger
 
   const handleOpenModal = (ingredient: Ingredient) => {
     dispatch(setOpenedIngredient(ingredient));
+    window.history.replaceState(null, '', `/ingredients/${ ingredient._id }`);
   };
 
   const handleCloseModal = () => {
