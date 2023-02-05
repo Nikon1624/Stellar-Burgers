@@ -1,4 +1,5 @@
 import { Ingredient, IngredientTypes } from '../types/ingredient';
+import axios, { AxiosError } from 'axios';
 
 export const getIngredientTypes = (ingredients: Ingredient[]): IngredientTypes[] => {
   const set = new Set();
@@ -45,4 +46,20 @@ export const moveItem = <T>(arr: T[], itemIndex: number, positionIndex: number) 
   result.splice(positionIndex, 0, item);
 
   return result;
+};
+
+type ServerError = {
+  message: string;
+  success: boolean;
+};
+
+export const handleApiError = (e: unknown) => {
+  if (axios.isAxiosError(e)) {
+    const serverError = e as AxiosError<ServerError>;
+    if (serverError && serverError.response) {
+      return serverError.response?.data?.message || 'Произошла ошибка, попробуйте позже';
+    }
+  }
+
+  return 'Произошла ошибка, попробуйте позже';
 };

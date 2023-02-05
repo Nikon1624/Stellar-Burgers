@@ -1,19 +1,22 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import classnames from 'classnames';
-import { ColorType } from '../../../consts';
 import styles from './icon-list.module.css';
 
 type IconLinkProps = {
   url: string;
   text: string;
   children: React.ReactNode;
-  type: Exclude<ColorType, 'error' | 'success'>;
 };
 
-export const IconLink: React.FC<IconLinkProps> = ({ children, url, text, type }) => (
-  <a
-    href={ url }
-    className={ classnames('pt-4 pb-4 pl-5 pr-5', styles.link, type === 'primary' ? styles.linkPrimary : styles.linkSecondary) }
+export const IconLink: React.FC<IconLinkProps> = ({ children, url, text }) => (
+  <NavLink
+    to={ url }
+    className={({ isActive }) => (
+      isActive
+        ? classnames('pt-4 pb-4 pl-5 pr-5', styles.link, styles.linkPrimary)
+        : classnames('pt-4 pb-4 pl-5 pr-5', styles.link, styles.linkSecondary)
+    ) }
   >
     <div className={ classnames('mr-2', styles.icon) }>
       { children }
@@ -21,5 +24,5 @@ export const IconLink: React.FC<IconLinkProps> = ({ children, url, text, type })
     <span className={ classnames('text text_type_main-small', styles.text) }>
       { text }
     </span>
-  </a>
+  </NavLink>
 );

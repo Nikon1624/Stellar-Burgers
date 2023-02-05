@@ -1,0 +1,18 @@
+.credentials-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 480px;
+}
+
+.credentials-form-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: var(--secondary-color);
+}
+
+.credentials-form-footer a {
+  color: var(--accent-color);
+}
