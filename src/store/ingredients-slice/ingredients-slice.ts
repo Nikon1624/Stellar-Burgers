@@ -11,6 +11,7 @@ const initialState: IngredientsState = {
   selectedIngredients: [],
   openedIngredient: null,
   order: null,
+  orderSended: false,
 };
 
 export const ingredientsSlice = createSlice({
@@ -48,12 +49,17 @@ export const ingredientsSlice = createSlice({
       })
       .addCase(sendOrder.pending, (state) => {
         state.order = null;
+        state.orderSended = true;
       })
       .addCase(sendOrder.fulfilled, (state, action) => {
         state.order = action.payload;
+        state.orderSended = false;
+
       })
       .addCase(sendOrder.rejected, (state, action) => {
         state.order = null;
+        state.orderSended = false;
+
 
         toast.error(action.payload, {
           theme: 'dark',
