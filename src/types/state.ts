@@ -7,6 +7,7 @@ export type IngredientsState = {
   selectedIngredients: IngredientWithUniqId[];
   openedIngredient: Ingredient | null;
   order: OrdersApiResponse | null;
+  orderSended: boolean;
 };
 
 export type User = {

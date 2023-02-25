@@ -8,7 +8,7 @@ import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
 import { calcPropValues } from '../../utils/utils';
 import { useAppDispatch, useAppSelector } from '../../hooks/state';
-import { getOrder, getSelectedIngredients } from '../../store/ingredients-slice/selectors';
+import { getOrder, getOrderSendStatus, getSelectedIngredients } from '../../store/ingredients-slice/selectors';
 import { getUser } from '../../store/user-slice/selectors';
 import { sendOrder } from '../../store/ingredients-slice/actions';
 import { toast } from 'react-toastify';
@@ -23,6 +23,7 @@ export const BurgerConstructor: React.FC = () => {
   const user = useAppSelector(getUser);
   const ingredients = useAppSelector(getSelectedIngredients);
   const order = useAppSelector(getOrder);
+  const orderSended = useAppSelector(getOrderSendStatus);
   const [showModal, setShowModal] = useActive<boolean>(false);
 
   const handleModalClose = () => {
@@ -30,6 +31,10 @@ export const BurgerConstructor: React.FC = () => {
   };
 
   const handleOrderClick = () => {
+    if (orderSended) {
+      return;
+    }
+
     if (ingredients.length && bun && user) {
       const ids = ingredients.map((ingredient) => ingredient._id);
       dispatch(sendOrder(ids));
@@ -89,6 +94,7 @@ export const BurgerConstructor: React.FC = () => {
             type="primary"
             size="medium"
             extraClass="ml-10"
+            disabled={ orderSended }
             onClick={ handleOrderClick }
           >
             Оформить заказ

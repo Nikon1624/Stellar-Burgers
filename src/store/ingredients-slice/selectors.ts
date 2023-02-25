@@ -12,6 +12,8 @@ export const getOpenedIngredient = (state: StateType): Ingredient | null => stat
 
 export const getOrder = (state: StateType): OrdersApiResponse | null => state[Namespace.Ingredients].order;
 
+export const getOrderSendStatus = (state: StateType): boolean => state[Namespace.Ingredients].orderSended;
+
 export const getIngredientCount = (ingredient: Ingredient) => createSelector(
   [getSelectedIngredients],
   (selectedIngredients) => {
